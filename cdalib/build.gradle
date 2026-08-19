@@ -1,0 +1,81 @@
+plugins {
+    alias(libs.plugins.android.library)
+    id 'maven-publish'
+}
+
+android {
+    namespace 'com.cdarobotics.cdalib'
+    compileSdk {
+        version = release(36)
+    }
+
+    defaultConfig {
+        minSdk 24
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    // Required for AGP 8+ Maven publishing (and therefore JitPack): declare which variant
+    // gets published and ship the sources alongside it.
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
+}
+
+dependencies {
+    implementation libs.appcompat
+    implementation libs.material
+
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+
+    // The FTC SDK is always provided by the Robot Controller app at runtime. Scoping it
+    // compileOnly (like FTCLib does) keeps a duplicate/conflicting copy out of the AAR.
+    // RobotCore = hardware device interfaces; Hardware = LynxModule (bulk caching) and hub impls.
+    compileOnly libs.robotcore
+    compileOnly libs.hardware
+
+    // PedroPathing types leak into CDALib's public API (Follower, Pose, ...), so expose them
+    // transitively with 'api' — teams importing CDALib get PedroPathing automatically.
+    api libs.ftc
+    api libs.telemetry
+
+    // PhotonFTC (PhotonCore) speeds up hardware I/O to cut loop times. Teams opt in by adding
+    // the @Photon annotation to their own OpMode (or ModularOpMode subclass), so the annotation
+    // must be on their compile classpath — expose it transitively with 'api'. Photon itself
+    // links against the FTC SDK compileOnly (provided by the Robot Controller app at runtime),
+    // so nothing extra is bundled beyond PhotonCore.
+    api libs.photon
+}
+
+// Maven coordinates for the published AAR. Via JitPack the groupId is overridden to
+// com.github.<github-user-or-org>, so teams import it as:
+//   implementation 'com.github.<user>:CDALib:<git-tag>'
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.cdarobotics'
+                artifactId = 'cdalib'
+                version = '0.1.0'
+            }
+        }
+    }
+}

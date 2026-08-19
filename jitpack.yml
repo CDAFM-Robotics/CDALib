@@ -1,0 +1,6 @@
+# JitPack build config. AGP 8.13 requires JDK 17; JitPack defaults to an older JDK,
+# so pin it and publish the release AAR to the local Maven repo JitPack harvests from.
+jdk:
+  - openjdk17
+install:
+  - ./gradlew :cdalib:publishToMavenLocal -x test -x lint
