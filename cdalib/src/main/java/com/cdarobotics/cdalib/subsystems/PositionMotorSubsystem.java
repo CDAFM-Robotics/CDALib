@@ -41,6 +41,11 @@ public class PositionMotorSubsystem extends Subsystem {
     }
 
     @Override
+    public void init_loop() {
+        
+    }
+
+    @Override
     public void start() {
         previousTime = System.nanoTime() / 1_000_000_000.0;
     }

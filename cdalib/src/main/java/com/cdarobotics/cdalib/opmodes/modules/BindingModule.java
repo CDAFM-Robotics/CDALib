@@ -36,6 +36,11 @@ public class BindingModule extends Module {
     }
 
     @Override
+    public void init_loop() {
+        
+    }
+
+    @Override
     public void start() {
 
     }

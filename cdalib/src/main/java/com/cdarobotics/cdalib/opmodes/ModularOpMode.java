@@ -77,6 +77,15 @@ public abstract class ModularOpMode extends OpMode {
         }
     }
 
+    public void init_loop() {
+        for (Subsystem subsystem : subsystems) {
+            subsystem.init_loop();
+        }
+        for (Module module : modules) {
+            module.init_loop();
+        }
+    }
+
     @Override
     public void start() {
         for (Subsystem subsystem : subsystems) {

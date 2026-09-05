@@ -70,6 +70,11 @@ public class TeleOpPedroModule extends Module {
     }
 
     @Override
+    public void init_loop() {
+
+    }
+
+    @Override
     public void start() {
         follower.startTeleOpDrive(true);
     }

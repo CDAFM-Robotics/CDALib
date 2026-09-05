@@ -7,6 +7,8 @@ public abstract class Module {
     /** Called once when the OpMode initializes. */
     public abstract void init();
 
+    public abstract void init_loop();
+
     /** Called once when the OpMode starts (play pressed). */
     public abstract void start();
 

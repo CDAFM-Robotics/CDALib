@@ -76,6 +76,11 @@ public class ThreadedIMU extends Subsystem {
         // The IMU is initialized by the caller; nothing to grab here.
     }
 
+    @Override
+    public void init_loop() {
+
+    }
+
     /** Launches the reader thread. Idempotent — calling twice while running does nothing. */
     @Override
     public void start() {

@@ -8,6 +8,8 @@ public abstract class Subsystem {
     /** Called once when the OpMode initializes. Grab hardware and set starting state here. */
     public abstract void init();
 
+    public abstract void init_loop();
+
     /** Called once when the OpMode starts (play pressed). */
     public abstract void start();
 

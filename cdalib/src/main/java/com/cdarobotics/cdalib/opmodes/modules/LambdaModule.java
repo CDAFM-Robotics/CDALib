@@ -31,6 +31,11 @@ public class LambdaModule extends Module {
     }
 
     @Override
+    public void init_loop() {
+        
+    }
+
+    @Override
     public void start() {
         startLambda.run();
     }

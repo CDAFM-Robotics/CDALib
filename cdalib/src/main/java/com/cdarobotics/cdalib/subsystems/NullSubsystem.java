@@ -7,6 +7,11 @@ public class NullSubsystem extends Subsystem {
     }
 
     @Override
+    public void init_loop() {
+        
+    }
+
+    @Override
     public void start() {
 
     }
