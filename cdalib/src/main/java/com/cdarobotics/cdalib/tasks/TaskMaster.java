@@ -31,9 +31,13 @@ public class TaskMaster {
         }
     }
 
+    /** Whether the active task finished on the most recent {@link #update()}. */
     boolean status;
 
-    /** Advances the active task by one step. Call once per loop. */
+    /**
+     * Advances the active task by one step, initializing it on the first call and returning to idle
+     * (a {@link NullTask}) once it finishes. Call once per loop.
+     */
     public void update() {
         if (!taskInitialized) {
             task.init();

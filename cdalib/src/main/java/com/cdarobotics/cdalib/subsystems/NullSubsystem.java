@@ -1,5 +1,9 @@
 package com.cdarobotics.cdalib.subsystems;
 
+/**
+ * A {@link Subsystem} whose lifecycle methods all do nothing. Useful as a no-op placeholder or
+ * default where a subsystem is required but no behavior is wanted.
+ */
 public class NullSubsystem extends Subsystem {
     @Override
     public void init() {

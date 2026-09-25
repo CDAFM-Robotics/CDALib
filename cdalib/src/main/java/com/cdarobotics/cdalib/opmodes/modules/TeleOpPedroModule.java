@@ -2,7 +2,7 @@ package com.cdarobotics.cdalib.opmodes.modules;
 
 import com.cdarobotics.cdalib.bindings.BindingManager;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Pose;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -28,7 +28,7 @@ public class TeleOpPedroModule extends Module {
 
     public TeleOpPedroModule(Follower follower, Pose startingPose, BindingManager bindingManager, double slowModeMultiplier) {
         this.follower = follower;
-        follower.setStartingPose(startingPose);
+        follower.setPose(startingPose);
         this.bindingManager = bindingManager;
 
         this.slowModeMultiplier = slowModeMultiplier;
@@ -42,7 +42,7 @@ public class TeleOpPedroModule extends Module {
      */
     public TeleOpPedroModule(Follower follower, Pose startingPose, BindingManager bindingManager) {
         this.follower = follower;
-        follower.setStartingPose(startingPose);
+        follower.setPose(startingPose);
         this.bindingManager = bindingManager;
 
         this.slowModeMultiplier = 1;
@@ -76,17 +76,22 @@ public class TeleOpPedroModule extends Module {
 
     @Override
     public void start() {
-        follower.startTeleOpDrive(true);
+        // Pedro 3 has no separate startTeleopDrive() call — calling follower.manual(...) each loop
+        // (see loop()) puts the follower into MANUAL mode on its own. The drive powers are applied
+        // by follower.update(), which must run every loop.
     }
 
     @Override
     public void loop() {
         if (bindingManager.checkBinding("slowMode")) {
-            follower.setTeleOpDrive(bindingManager.checkAnalog("drive") * slowModeMultiplier, bindingManager.checkAnalog("strafe") * slowModeMultiplier, bindingManager.checkAnalog("turn"));
+            follower.manual(bindingManager.checkAnalog("drive") * slowModeMultiplier, bindingManager.checkAnalog("strafe") * slowModeMultiplier, bindingManager.checkAnalog("turn"));
         }
         else {
-            follower.setTeleOpDrive(bindingManager.checkAnalog("drive"), bindingManager.checkAnalog("strafe"), bindingManager.checkAnalog("turn"));
+            follower.manual(bindingManager.checkAnalog("drive"), bindingManager.checkAnalog("strafe"), bindingManager.checkAnalog("turn"));
         }
+        // New in Pedro 3: ManualDrive.driveOrHold(follower, forward, lateral, turn) auto-holds the
+        // robot's pose when the sticks are released. It calls follower.hold(), which needs a tuned
+        // algorithm, so it's left opt-in rather than wired in here.
     }
 
     @Override

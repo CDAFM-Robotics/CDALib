@@ -1,12 +1,19 @@
 package com.cdarobotics.cdalib.opmodes.modules;
 
 /**
- * A simple class that acts as a modular version of an OpMode. It can be used to make modular parts of programs that can be used in multiple places.
+ * A reusable, OpMode-shaped unit of behavior. A module has the same lifecycle as an OpMode
+ * ({@link #init()}, {@link #init_loop()}, {@link #start()}, {@link #loop()}, {@link #stop()}) and is
+ * driven automatically once installed with {@link com.cdarobotics.cdalib.opmodes.ModularOpMode#installModule}.
+ * Use it to package program logic that can be shared across multiple OpModes.
  */
 public abstract class Module {
     /** Called once when the OpMode initializes. */
     public abstract void init();
 
+    /**
+     * Called repeatedly during the OpMode init phase, after {@link #init()} and before
+     * {@link #start()}, while the driver is still on the init screen.
+     */
     public abstract void init_loop();
 
     /** Called once when the OpMode starts (play pressed). */

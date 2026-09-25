@@ -24,13 +24,24 @@ import java.util.List;
  */
 public abstract class ModularOpMode extends OpMode {
 
+    /** Drives queued tasks; polled once in {@link #start()} and again every {@link #loop()}. */
     private final TaskMaster taskMaster = new TaskMaster();
+    /** Subsystems registered via {@link #registerSubsystem}, driven in registration order. */
     private final LinkedList<Subsystem> subsystems = new LinkedList<>();
+    /** Modules installed via {@link #installModule}, driven in installation order. */
     private final LinkedList<Module> modules = new LinkedList<>();
 
+    /** Every Lynx hub in the hardware map, discovered in {@link #init()} for bulk-cache management. */
     private List<LynxModule> lynxModules;
+    /** Bulk-caching mode applied to every hub; defaults to {@code MANUAL}. See {@link #setBulkCachingMode}. */
     private LynxModule.BulkCachingMode bulkCachingMode = LynxModule.BulkCachingMode.MANUAL;
 
+    /**
+     * Shared binding manager for this OpMode. Modules such as
+     * {@link com.cdarobotics.cdalib.opmodes.modules.BindingModule} and
+     * {@link com.cdarobotics.cdalib.opmodes.modules.TeleOpPedroModule} register and query gamepad
+     * bindings against it. Exposed to subclasses so they can wire their own bindings.
+     */
     protected final BindingManager bindingManager = new BindingManager();
 
     /**
@@ -55,11 +66,19 @@ public abstract class ModularOpMode extends OpMode {
 
 
     /**
-     * Preload is a function run before the initialization of the subsystems and the modules. The main use for this function is to register the subsystems and install the modules.
+     * Hook run once at the very start of {@link #init()}, before any subsystem or module is
+     * initialized. Subclasses implement it to build the robot: register subsystems with
+     * {@link #registerSubsystem}, install modules with {@link #installModule}, and optionally change
+     * the bulk-caching mode via {@link #setBulkCachingMode}.
      */
     protected abstract void preload();
 
 
+    /**
+     * Runs {@link #preload()}, applies the bulk-caching mode to every Lynx hub, then calls
+     * {@link Subsystem#init()} on each registered subsystem and {@link Module#init()} on each
+     * installed module, in registration order.
+     */
     @Override
     public void init() {
         preload();
@@ -77,6 +96,10 @@ public abstract class ModularOpMode extends OpMode {
         }
     }
 
+    /**
+     * Called repeatedly while the driver is on the init screen. Forwards to
+     * {@link Subsystem#init_loop()} on each subsystem and {@link Module#init_loop()} on each module.
+     */
     public void init_loop() {
         for (Subsystem subsystem : subsystems) {
             subsystem.init_loop();
@@ -86,6 +109,10 @@ public abstract class ModularOpMode extends OpMode {
         }
     }
 
+    /**
+     * Called once when play is pressed. Calls {@link Subsystem#start()} on each subsystem and
+     * {@link Module#start()} on each module, then polls the task master once.
+     */
     @Override
     public void start() {
         for (Subsystem subsystem : subsystems) {
@@ -97,6 +124,12 @@ public abstract class ModularOpMode extends OpMode {
         taskMaster.update();
     }
 
+    /**
+     * The main run loop. In {@code MANUAL} bulk-caching mode, clears every hub's bulk cache once so
+     * the loop's first hardware read pulls all sensors in a single transaction. Then calls
+     * {@link Subsystem#update()} on each subsystem and {@link Module#loop()} on each module, and
+     * polls the task master.
+     */
     @Override
     public void loop() {
         // Bulk read: in MANUAL mode, clearing the cache once per loop means the first hardware read
@@ -116,6 +149,10 @@ public abstract class ModularOpMode extends OpMode {
         taskMaster.update();
     }
 
+    /**
+     * Called once when the OpMode ends. Calls {@link Subsystem#stop()} on each subsystem and
+     * {@link Module#stop()} on each module so they can safe or release hardware.
+     */
     @Override
     public void stop() {
         for (Subsystem subsystem : subsystems) {

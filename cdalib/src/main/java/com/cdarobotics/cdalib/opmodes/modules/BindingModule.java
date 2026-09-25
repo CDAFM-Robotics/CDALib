@@ -17,6 +17,9 @@ public class BindingModule extends Module {
     private boolean lastActive = false;
 
     /**
+     * Creates a binding-driven module, registering the binding with the manager immediately (via
+     * {@link BindingManager#replaceBinding}) and remembering its id for edge detection.
+     *
      * @param bindingManager the manager the binding is registered with
      * @param binding        the trigger condition
      * @param action         run once on each rising edge of the binding

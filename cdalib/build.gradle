@@ -51,9 +51,10 @@ dependencies {
     compileOnly libs.hardware
 
     // PedroPathing types leak into CDALib's public API (Follower, Pose, ...), so expose them
-    // transitively with 'api' — teams importing CDALib get PedroPathing automatically.
-    api libs.ftc
-    api libs.telemetry
+    // transitively with 'api' — teams importing CDALib get PedroPathing automatically. Pedro 3
+    // splits into 'core' (Follower, Pose, Path) and 'revhub' (Mecanum, localizers); expose both.
+    api libs.pedro.core
+    api libs.pedro.revhub
 
     // PhotonFTC (PhotonCore) speeds up hardware I/O to cut loop times. Teams opt in by adding
     // the @Photon annotation to their own OpMode (or ModularOpMode subclass), so the annotation
@@ -74,7 +75,9 @@ afterEvaluate {
 
                 groupId = 'com.cdarobotics'
                 artifactId = 'cdalib'
-                version = '0.1.1'
+                // Bumped for the Pedro Pathing 3.0 migration — a breaking change for consumers, since
+                // Pedro 3 rewrote the path-following API this library wraps.
+                version = '0.2.0'
             }
         }
     }

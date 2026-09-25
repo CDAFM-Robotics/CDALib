@@ -1,17 +1,21 @@
 [versions]
 agp = "8.13.2"
-ftc = "2.1.2"
+pedro = "3.0.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.7.1"
 material = "1.10.0"
-robotcore = "11.1.0"
-telemetry = "1.0.0"
+robotcore = "12.0.0"
 photon = "v3.0.1-ALPHA"
 
 [libraries]
-ftc = { module = "com.pedropathing:ftc", version.ref = "ftc" }
+# Pedro Pathing 3.0 split the single 'com.pedropathing:ftc' artifact into 'core' (pure
+# pathing/math: Follower, Pose, Path, Paths, Foresight) and 'revhub' (the REV-hub hardware layer:
+# Mecanum, Pinpoint/OTOS/OctoQuad localizers). Both are on Maven Central; the old maven.pedropathing
+# repo is no longer needed. 'revhub' pulls 'core' transitively, but both are exposed as `api` below.
+pedro-core = { module = "com.pedropathing:core", version.ref = "pedro" }
+pedro-revhub = { module = "com.pedropathing:revhub", version.ref = "pedro" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -19,7 +23,6 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 robotcore = { module = "org.firstinspires.ftc:RobotCore", version.ref = "robotcore" }
 hardware = { module = "org.firstinspires.ftc:Hardware", version.ref = "robotcore" }
-telemetry = { module = "com.pedropathing:telemetry", version.ref = "telemetry" }
 photon = { module = "com.github.Eeshwar-Krishnan:PhotonFTC", version.ref = "photon" }
 
 [plugins]

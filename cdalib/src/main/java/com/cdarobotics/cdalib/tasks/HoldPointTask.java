@@ -3,7 +3,7 @@ package com.cdarobotics.cdalib.tasks;
 import androidx.annotation.NonNull;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Pose;
 
 /** A task that commands the PedroPathing follower to hold a pose, finishing immediately after issuing the command. */
 public class HoldPointTask extends Task {
@@ -20,7 +20,7 @@ public class HoldPointTask extends Task {
 
     @Override
     public void init() {
-        follower.holdPoint(holdPose);
+        follower.hold(holdPose);
     }
 
     @Override

@@ -30,9 +30,10 @@ public class LambdaModule extends Module {
         initLambda.run();
     }
 
+    /** No-op; {@code LambdaModule} has no init-loop lambda. */
     @Override
     public void init_loop() {
-        
+
     }
 
     @Override

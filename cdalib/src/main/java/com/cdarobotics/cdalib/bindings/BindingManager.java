@@ -20,11 +20,12 @@ public class BindingManager {
     }
 
     /**
-     * Function that adds a binding to the BindingManager class. It will be registered in the map with the id and the Binding. If it already is in the class, then this function will not do anything and return false.
+     * Registers a new {@link Binding} under the given id. Does nothing if a binding with that id is
+     * already registered.
      *
-     * @param id The id of the Binding to be added
-     * @param condition The supplier for the Binding
-     * @return Whether the binding was added
+     * @param id        the id to register the binding under
+     * @param condition the condition supplier for the binding
+     * @return {@code true} if the binding was added, {@code false} if the id was already taken
      */
     public boolean addBinding(String id, BooleanSupplier condition) {
         if (!bindings.containsKey(id)) {
@@ -37,10 +38,11 @@ public class BindingManager {
     }
 
     /**
-     * Function that adds a binding to the BindingManager class. It will be registered in the map with the id and the Binding. If it already is in the class, then this function will not do anything and return false.
+     * Registers the given {@link Binding} under its own id. Does nothing if a binding with that id
+     * is already registered.
      *
-     * @param binding The binding to be added
-     * @return Whether the binding was added
+     * @param binding the binding to add
+     * @return {@code true} if the binding was added, {@code false} if the id was already taken
      */
     public boolean addBinding(Binding binding) {
         if (!bindings.containsKey(binding.getId())) {
@@ -53,30 +55,32 @@ public class BindingManager {
     }
 
     /**
-     * Function that adds or replaces an existing Binding in the BindingManager class. It will be registered in the map with the id and the Binding.
+     * Registers a {@link Binding} under the given id, overwriting any existing binding with that id.
      *
-     * @param id The id of the Binding to be added
-     * @param condition The supplier for the Binding
+     * @param id        the id to register the binding under
+     * @param condition the condition supplier for the binding
      */
     public void replaceBinding(String id, BooleanSupplier condition) {
         bindings.put(id, new Binding(condition, id));
     }
 
     /**
-     * Function that adds or replaces an existing Binding in the BindingManager class. It will be registered in the map with the id and the Binding.
+     * Registers the given {@link Binding} under its own id, overwriting any existing binding with
+     * that id.
      *
-     * @param binding The id of the Binding to be added
+     * @param binding the binding to add
      */
     public void replaceBinding(Binding binding) {
         bindings.put(binding.getId(), binding);
     }
 
     /**
-     * Function that adds an analog binding to the BindingManager class. It will be registered in the map with the id and the AnalogBinding. If it already is in the class, then this function will not do anything and return false.
+     * Registers a new {@link AnalogBinding} under the given id. Does nothing if an analog binding
+     * with that id is already registered.
      *
-     * @param id The id of the Binding to be added
-     * @param provider The supplier for the Binding
-     * @return Whether the analog binding was added
+     * @param id       the id to register the analog binding under
+     * @param provider the value supplier for the analog binding
+     * @return {@code true} if the analog binding was added, {@code false} if the id was already taken
      */
     public boolean addAnalog(String id, DoubleSupplier provider) {
         if (!analogs.containsKey(id)) {
@@ -89,28 +93,32 @@ public class BindingManager {
     }
 
     /**
-     * Function that adds or replaces an existing AnalogBinding in the BindingManager class. It will be registered in the map with the id and the AnalogBinding.
+     * Registers an {@link AnalogBinding} under the given id, overwriting any existing analog binding
+     * with that id.
      *
-     * @param id The id of the AnalogBinding to be added
-     * @param provider The supplier for the AnalogBinding
+     * @param id       the id to register the analog binding under
+     * @param provider the value supplier for the analog binding
      */
     public void replaceAnalog(String id, DoubleSupplier provider) {
         analogs.put(id, new AnalogBinding(provider, id));
     }
 
     /**
-     * Function that adds or replaces an existing AnalogBinding in the BindingManager class. It will be registered in the map with the id and the AnalogBinding.
+     * Registers the given {@link AnalogBinding} under its own id, overwriting any existing analog
+     * binding with that id.
      *
-     * @param analog The binding to be added
+     * @param analog the analog binding to add
      */
     public void replaceAnalog(AnalogBinding analog) {
         analogs.put(analog.getId(), analog);
     }
 
     /**
-     * Function that retrieves the state of a binding using an id. If the binding with that id is not registered inside of this class or the registered binding is null, then this function will always return false.
-     * @param id The id of the binding
-     * @return The status of the binding, false if it is null or not registered
+     * Evaluates the {@link Binding} registered under the given id.
+     *
+     * @param id the id of the binding
+     * @return the binding's current status, or {@code false} if no non-null binding is registered
+     *         under that id
      */
     public boolean checkBinding(String id) {
         if (bindings.containsKey(id) && bindings.get(id) != null) {
@@ -122,9 +130,11 @@ public class BindingManager {
     }
 
     /**
-     * Function that retrieves the value of an analog binding using an id. If the binding with that id is not registered inside of this class or the registered binding is null, then this function will always return false.
-     * @param id The id of the binding
-     * @return The value of the binding, 0 if it is null or not registered
+     * Reads the value of the {@link AnalogBinding} registered under the given id.
+     *
+     * @param id the id of the analog binding
+     * @return the analog binding's current value, or {@code 0} if no non-null analog binding is
+     *         registered under that id
      */
     public double checkAnalog(String id) {
         if (analogs.containsKey(id) && analogs.get(id) != null) {
