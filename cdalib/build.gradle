@@ -75,9 +75,11 @@ afterEvaluate {
 
                 groupId = 'com.cdarobotics'
                 artifactId = 'cdalib'
-                // Bumped for the Pedro Pathing 3.0 migration — a breaking change for consumers, since
-                // Pedro 3 rewrote the path-following API this library wraps.
-                version = '0.2.0'
+                // 0.3.0: breaking actuator refactor — PositionMotorSubsystem replaced by
+                // PositionMotorDevice/VelocityMotorDevice, and MotorDevice accessors renamed
+                // (getPower -> getCurrentPower, getVelocity -> getCurrentVelocity,
+                // setWriteThreshold -> setPowerWriteThreshold).
+                version = '0.3.0'
             }
         }
     }

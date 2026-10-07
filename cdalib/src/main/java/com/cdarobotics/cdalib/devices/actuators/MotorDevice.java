@@ -17,14 +17,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  * <p>Configuration and read setters return {@code this} for fluent chaining.
  */
 public class MotorDevice extends Device {
+
     private final DcMotorEx motor;
 
     /** Power changes smaller than this (vs. the value last written to hardware) skip the write. */
-    private static final double DEFAULT_WRITE_THRESHOLD = 0.005;
+    private static final double DEFAULT_POWER_WRITE_THRESHOLD = 0.005;
+    private static final int DEFAULT_POSITION_WRITE_THRESHOLD = 5;
+    private static final double DEFAULT_VELOCITY_WRITE_THRESHOLD = 1;
 
     private double targetPower = 0.0;
-    private double lastWritten = Double.NaN;   // NaN => nothing written to hardware yet
-    private double writeThreshold = DEFAULT_WRITE_THRESHOLD;
+    private double lastPower = Double.NaN;   // NaN => nothing written to hardware yet
+    private double powerWriteThreshold = DEFAULT_POWER_WRITE_THRESHOLD;
 
     /** Wraps an already-resolved motor. */
     public MotorDevice(DcMotorEx motor) {
@@ -46,15 +49,15 @@ public class MotorDevice extends Device {
      * Sets the minimum power change (relative to the value last written to hardware) that triggers
      * an actual write in {@link #update()}. Larger values collapse more redundant Lynx writes —
      * cutting loop time when the command is steady — at the cost of coarser resolution. Set to
-     * {@code 0} for exact writes (every change flushed). Defaults to {@value #DEFAULT_WRITE_THRESHOLD}.
+     * {@code 0} for exact writes (every change flushed). Defaults to {@value #DEFAULT_POWER_WRITE_THRESHOLD}.
      */
-    public MotorDevice setWriteThreshold(double threshold) {
-        writeThreshold = threshold;
+    public MotorDevice setPowerWriteThreshold(double threshold) {
+        powerWriteThreshold = threshold;
         return this;
     }
 
     /** @return the last commanded power (not necessarily yet flushed to hardware). */
-    public double getPower() {
+    public double getCurrentPower() {
         return targetPower;
     }
 
@@ -64,7 +67,7 @@ public class MotorDevice extends Device {
     }
 
     /** @return the current velocity, in ticks per second. */
-    public double getVelocity() {
+    public double getCurrentVelocity() {
         return motor.getVelocity();
     }
 
@@ -96,16 +99,15 @@ public class MotorDevice extends Device {
         return motor;
     }
 
+
+
     @Override
     public void update() {
-        // Skip the (blocking) Lynx write when the command hasn't moved meaningfully since the last
-        // one — joystick jitter and steady holds then cost no bus transaction. Always flush the
-        // first command and an exact stop (0.0), so the motor never creeps or lags on those.
-        boolean firstWrite = Double.isNaN(lastWritten);
-        boolean stopping = targetPower == 0.0 && lastWritten != 0.0;
-        if (firstWrite || stopping || Math.abs(targetPower - lastWritten) >= writeThreshold) {
+        boolean firstWrite = Double.isNaN(lastPower);
+        boolean stopping = targetPower == 0.0 && lastPower != 0.0;
+        if (firstWrite || stopping || Math.abs(targetPower - lastPower) >= powerWriteThreshold) {
             motor.setPower(targetPower);
-            lastWritten = targetPower;
+            lastPower = targetPower;
         }
     }
 }
