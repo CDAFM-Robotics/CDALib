@@ -20,6 +20,18 @@ public class CompoundController extends Controller {
         super(target);
 
         this.controllers = controllers;
+
+        for (Controller controller : controllers) {
+            controller.setTarget(target);
+        }
+    }
+
+    @Override
+    public void setTarget(double target) {
+        super.setTarget(target);
+        for (Controller controller : controllers) {
+            controller.setTarget(target);
+        }
     }
 
     @Override

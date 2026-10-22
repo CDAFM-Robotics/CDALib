@@ -2,6 +2,7 @@ package com.cdarobotics.cdalib.devices.actuators;
 
 import com.cdarobotics.cdalib.controllers.Controller;
 import com.cdarobotics.cdalib.controllers.NullController;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -84,7 +85,12 @@ public class VelocityMotorDevice extends MotorDevice {
         double dt = currentTime - lastTime;
         lastTime = currentTime;
 
-        this.setPower(controller.update(this.getCurrentVelocity(), dt));
+        if (getMotor().getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.FLOAT && velocity == 0) {
+            this.setPower(0);
+        }
+        else {
+            this.setPower(controller.update(this.getCurrentVelocity(), dt));
+        }
 
         super.update();
     }
