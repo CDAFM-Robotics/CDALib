@@ -75,10 +75,9 @@ afterEvaluate {
 
                 groupId = 'com.cdarobotics'
                 artifactId = 'cdalib'
-                // 0.3.1: bug fixes — FFController now feeds off target (not current),
-                // CompoundController propagates setTarget to its child controllers, and
-                // VelocityMotorDevice cuts power to 0 when commanded to stop a FLOAT motor.
-                version = '0.3.1'
+                // 0.3.2: FFController drops the kCos cosine term — it now returns a pure
+                // static + velocity feedforward (kS + kF * target).
+                version = '0.3.2'
             }
         }
     }
