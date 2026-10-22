@@ -28,6 +28,6 @@ public class FFController extends Controller {
 
     @Override
     public double update(double current, double dt) {
-        return kS + kF * target + Math.cos(kCos * target);
+        return kS + kF * target;
     }
 }
